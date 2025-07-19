@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { Routes, Route, useLocation } from 'react-router-dom';
 import Home from './pages/Home';
 import Cart from './pages/Cart';
 import Checkout from './pages/Checkout';
@@ -13,21 +13,27 @@ import CategoryProducts from './components/CategoryProducts';
 import Navbar2 from './components/Navbar2';
 import ScrollToTop from './components/ScrollToTop';
 import Contact from './components/Contact';
-
 import ProductDetails from './pages/ProductDetail';
-
-
-// ✅ Import the Lenis hook
+import Loader from './components/Loader'; // ✅ Import loader
 import { useLenis } from './hooks/useLenis';
 
 function App() {
   const [searchQuery, setSearchQuery] = useState('');
+  const [loading, setLoading] = useState(false);
+  const location = useLocation();
 
-  // ✅ Activate smooth scrolling
   useLenis();
+
+  // ✅ Trigger loader on route change
+  useEffect(() => {
+    setLoading(true);
+    const timer = setTimeout(() => setLoading(false), 500); // 0.7 sec loading
+    return () => clearTimeout(timer);
+  }, [location]);
 
   return (
     <>
+      {loading && <Loader />} {/* ✅ Show loader when changing routes */}
       <ScrollToTop />
       <Navbar onSearch={setSearchQuery} />
       <Navbar2 />
@@ -45,13 +51,9 @@ function App() {
           }
         />
         <Route path="/products" element={<AllProducts searchQuery={searchQuery} />} />
-        <Route
-          path="/category/:categoryName"
-          element={<CategoryProducts searchQuery={searchQuery} />}
-        />
+        <Route path="/category/:categoryName" element={<CategoryProducts searchQuery={searchQuery} />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/product/:productId" element={<ProductDetails />} />
-
       </Routes>
       <Footer />
     </>

@@ -1,12 +1,15 @@
 import { useParams } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import axios from 'axios';
+import { CartContext } from '../context/CartContext'; // ✅ Make sure this path is correct
+import toast from 'react-hot-toast'; // Optional: for notifications
 
 export default function ProductDetails() {
     const { productId } = useParams();
     const [product, setProduct] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const { addToCart } = useContext(CartContext); // ✅ access addToCart function
 
     useEffect(() => {
         const fetchProduct = async () => {
@@ -23,6 +26,13 @@ export default function ProductDetails() {
 
         fetchProduct();
     }, [productId]);
+
+    const handleAddToCart = () => {
+        if (product) {
+            addToCart(product); // ✅ Call context function
+            toast.success(`${product.name} added to cart!`);
+        }
+    };
 
     if (loading) {
         return (
@@ -67,7 +77,10 @@ export default function ProductDetails() {
                         Rs {product.price}
                     </div>
 
-                    <button className="mt-4 w-full sm:w-1/2 bg-orange-500 hover:bg-gray-500 text-white font-semibold py-2 px-5 rounded-lg transition-all duration-500 shadow-md">
+                    <button
+                        onClick={handleAddToCart} // ✅ now adds product to cart
+                        className="mt-4 w-full sm:w-1/2 bg-orange-500 hover:bg-gray-500 text-white font-semibold py-2 px-5 rounded-lg transition-all duration-500 shadow-md"
+                    >
                         Add to Cart
                     </button>
                 </div>

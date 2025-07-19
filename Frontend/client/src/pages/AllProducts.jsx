@@ -3,7 +3,7 @@ import axios from 'axios';
 import { CartContext } from '../context/CartContext';
 import toast from 'react-hot-toast';
 import { FaShoppingBag, FaWhatsapp } from 'react-icons/fa';
-import { Link } from 'react-router-dom'; // ✅ import Link
+import { Link } from 'react-router-dom';
 
 function AllProducts({ searchQuery }) {
     const [products, setProducts] = useState([]);

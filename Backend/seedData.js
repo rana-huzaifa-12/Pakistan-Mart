@@ -1,12 +1,12 @@
 const mongoose = require('mongoose');
 const Product = require('./models/product');
 
-// ✅ Connect to DB
-mongoose.connect('mongodb://127.0.0.1:27017/mern-shopping')
-    .then(() => console.log("✅ MongoDB Connected for Seeding"))
+// ✅ Connect to MongoDB Atlas
+mongoose.connect('mongodb+srv://huzaifa:9047huzaifa@pakistanmart.48nbdww.mongodb.net/pakistanmart?retryWrites=true&w=majority')
+    .then(() => console.log("✅ MongoDB Atlas Connected for Seeding"))
     .catch((err) => console.error("❌ DB Connection Error", err));
 
-// ✅ Sample Data
+// ✅ Sample Items
 const paperItems = [
     'Notebooks',
     'Sticky Notes',
@@ -49,7 +49,7 @@ const images = {
     'Phone Stands': 'https://source.unsplash.com/featured/?phonestand',
 };
 
-// ✅ Generate dummy products
+// ✅ Generate 100 Dummy Products
 const dummyProducts = Array.from({ length: 100 }).map((_, index) => {
     const isPaper = Math.random() < 0.5;
     const category = isPaper ? 'Paper Products' : 'Tech Products';
