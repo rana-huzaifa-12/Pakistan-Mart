@@ -18,7 +18,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// 🖼 Serve image uploads
+//  Serve image uploads
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 //  API Routes
@@ -31,7 +31,7 @@ app.get('/', (req, res) => {
     res.send('🛒 Shopping Store API is running');
 });
 
-// 🛢 MongoDB Atlas Connection with async/await
+//  MongoDB Atlas Connection with async/await
 const connectDB = async () => {
     try {
         await mongoose.connect(process.env.MONGO_URI);
