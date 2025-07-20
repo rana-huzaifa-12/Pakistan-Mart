@@ -24,13 +24,14 @@
 
 ## 🌟 Features
 
-- 🔍 Product Search and Filtering
-- 🛍️ Add to Cart Functionality
-- 📦 Category-wise Product Display
-- 🔐 JWT-based Authentication
-- 📱 Fully Responsive Design
-- 🧠 Modern UI with animations and transitions
-- 🧾 Realtime notifications (with toast)
+- 🔍 Product Search and Filtering  
+- 🛍️ Add to Cart Functionality  
+- 📦 Category-wise Product Display  
+- 🧾 User Can Place Orders Easily  
+- 🔐 JWT-based Authentication  
+- 📱 Fully Responsive Design  
+- 🧠 Modern UI with Animations and Transitions  
+- 🔔 Realtime Notifications (with Toast)  
 
 ---
 
