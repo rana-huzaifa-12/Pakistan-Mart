@@ -58,8 +58,17 @@ const Footer = () => {
                     &copy; {new Date().getFullYear()} <span className="text-orange-400 font-medium">Pakistan Mart</span>. All rights reserved.
                 </p>
                 <p className="mt-2 flex justify-center items-center gap-1">
-                    Made with <AiFillHeart className="text-orange-400 text-base" /> by <span className="text-orange-400 font-medium">Rana Huzaifa</span>
+                    Made with <AiFillHeart className="text-orange-400 text-base" /> by{" "}
+                    <a
+                        href="https://rana-huzaifa-portfolio.netlify.app/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-orange-400 font-medium hover:underline"
+                    >
+                        Rana Huzaifa
+                    </a>
                 </p>
+
             </div>
         </footer>
     );
