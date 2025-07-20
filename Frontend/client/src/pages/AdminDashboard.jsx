@@ -118,11 +118,20 @@ function AdminDashboard() {
         }
     };
 
+    // ✅ DELETE ORDER FUNCTION
+    const handleOrderDelete = async (id) => {
+        try {
+            await axios.delete(`http://localhost:5000/api/orders/${id}`, authHeader);
+            toast.success('🗑️ Order deleted!');
+            fetchOrders();
+        } catch (err) {
+            toast.error('❌ Error deleting order');
+        }
+    };
+
     return (
-
-
         <div className='bg-gradient-to-r from-orange-50 via-gray-200 to-gray-100'>
-            <div className="p-4 sm:p-6 space-y-10 max-w-7xl mx-auto  ">
+            <div className="p-4 sm:p-6 space-y-10 max-w-7xl mx-auto">
                 <h1 className="text-2xl sm:text-3xl font-bold text-gray-800">Admin Dashboard</h1>
 
                 {/* Form */}
@@ -131,7 +140,7 @@ function AdminDashboard() {
                     className="bg-white rounded-lg shadow-md p-5 space-y-4"
                     encType="multipart/form-data"
                 >
-                    <h2 className="text-lg sm:text-xl font-semibold mb-1 text-gray-700 ">
+                    <h2 className="text-lg sm:text-xl font-semibold mb-1 text-gray-700">
                         {editingId ? '✏️ Edit Product' : '➕ Add New Product'}
                     </h2>
 
@@ -145,7 +154,6 @@ function AdminDashboard() {
                             className="border px-3 py-2 rounded w-full"
                             required
                         />
-
                         <input
                             type="number"
                             name="price"
@@ -155,7 +163,6 @@ function AdminDashboard() {
                             className="border px-3 py-2 rounded w-full"
                             required
                         />
-
                         <input
                             type="text"
                             name="category"
@@ -165,7 +172,6 @@ function AdminDashboard() {
                             className="border px-3 py-2 rounded w-full"
                             required
                         />
-
                         <input
                             type="text"
                             name="description"
@@ -256,12 +262,19 @@ function AdminDashboard() {
                                             </li>
                                         ))}
                                     </ul>
+                                    <button
+                                        onClick={() => handleOrderDelete(order._id)}
+                                        className="mt-2 bg-red-500 hover:bg-red-600 text-white text-sm px-3 py-1 rounded"
+                                    >
+                                        Delete Order
+                                    </button>
                                 </div>
                             ))}
                         </div>
                     )}
                 </section>
-            </div></div>
+            </div>
+        </div>
     );
 }
 
