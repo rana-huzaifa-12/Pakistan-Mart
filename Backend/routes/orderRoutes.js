@@ -75,7 +75,8 @@ We’ll process your order shortly. If you have any questions, just reply to thi
     }
 });
 
-// @route GET /api/orders
+
+
 // @desc  Fetch all orders (admin use)
 router.get('/', async (req, res) => {
     try {
@@ -83,6 +84,23 @@ router.get('/', async (req, res) => {
         res.json(orders);
     } catch (err) {
         console.error('❌ Failed to fetch orders', err);
+        res.status(500).json({ message: 'Server error' });
+    }
+});
+
+
+// ✅ @desc  Delete an order by ID
+router.delete('/:id', async (req, res) => {
+    try {
+        const deletedOrder = await Order.findByIdAndDelete(req.params.id);
+
+        if (!deletedOrder) {
+            return res.status(404).json({ message: 'Order not found.' });
+        }
+
+        res.json({ message: 'Order deleted successfully.' });
+    } catch (err) {
+        console.error('❌ Failed to delete order', err);
         res.status(500).json({ message: 'Server error' });
     }
 });
