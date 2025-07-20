@@ -26,6 +26,8 @@ function Checkout() {
         paymentMethod: '',
     });
 
+    const [loading, setLoading] = useState(false);
+
     const baseTotal = cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
     const deliveryCharge = (form.paymentMethod && form.paymentMethod !== 'Cash on Delivery') ? 300 : 0;
     const total = baseTotal + deliveryCharge;
@@ -42,6 +44,7 @@ function Checkout() {
             return;
         }
 
+        setLoading(true);
         try {
             await axios.post('http://localhost:5000/api/orders', {
                 ...form,
@@ -55,6 +58,8 @@ function Checkout() {
         } catch (error) {
             console.error(error);
             toast.error('Failed to place order');
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -64,7 +69,6 @@ function Checkout() {
                 <FaShoppingCart className="text-4xl text-[#a73e2c] mb-3" />
                 <h1 className="text-2xl font-bold text-[#a73e2c] mb-2">Your Cart is Empty</h1>
                 <p className="text-gray-600">Go back and add some products to continue checkout.</p>
-
                 <a
                     href="https://wa.me/92542450992"
                     target="_blank"
@@ -87,7 +91,7 @@ function Checkout() {
                 </div>
 
                 <div className="space-y-5">
-                    {/* Name */}
+                    {/* Form Fields */}
                     <div className="flex items-center gap-3">
                         <FaUser className="text-[#a73e2c]" />
                         <input
@@ -96,11 +100,10 @@ function Checkout() {
                             value={form.name}
                             onChange={handleChange}
                             placeholder="Full Name"
-                            className="w-full border rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-orange-300"
+                            className="w-full border rounded px-4 py-2"
                         />
                     </div>
 
-                    {/* Email */}
                     <div className="flex items-center gap-3">
                         <FaEnvelope className="text-[#a73e2c]" />
                         <input
@@ -109,11 +112,10 @@ function Checkout() {
                             value={form.email}
                             onChange={handleChange}
                             placeholder="Email"
-                            className="w-full border rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-orange-300"
+                            className="w-full border rounded px-4 py-2"
                         />
                     </div>
 
-                    {/* Phone */}
                     <div className="flex items-center gap-3">
                         <FaPhone className="text-[#a73e2c]" />
                         <input
@@ -122,11 +124,10 @@ function Checkout() {
                             value={form.phone}
                             onChange={handleChange}
                             placeholder="Phone Number"
-                            className="w-full border rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-orange-300"
+                            className="w-full border rounded px-4 py-2"
                         />
                     </div>
 
-                    {/* Address */}
                     <div className="flex items-start gap-3">
                         <FaMapMarkerAlt className="mt-2 text-[#a73e2c]" />
                         <textarea
@@ -135,18 +136,17 @@ function Checkout() {
                             value={form.address}
                             onChange={handleChange}
                             placeholder="Delivery Address"
-                            className="w-full border rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-orange-300 resize-none"
+                            className="w-full border rounded px-4 py-2 resize-none"
                         />
                     </div>
 
-                    {/* Payment Method */}
                     <div className="flex items-center gap-3">
                         <FaMoneyBillWave className="text-[#a73e2c]" />
                         <select
                             name="paymentMethod"
                             value={form.paymentMethod}
                             onChange={handleChange}
-                            className="w-full border rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-orange-300"
+                            className="w-full border rounded px-4 py-2"
                         >
                             <option value="">Select Payment Method</option>
                             <option value="Cash on Delivery">Cash on Delivery</option>
@@ -162,50 +162,39 @@ function Checkout() {
                             {form.paymentMethod === 'Cash on Delivery' && (
                                 <>
                                     <p className="text-red-600 font-semibold">Important:</p>
-                                    <p>Delivery charges of <strong>Rs. 300</strong> must be sent in advance to confirm your Cash on Delivery order.</p>
-                                    <p>Send advance to (EasyPaisa ) <strong>0307-6200531</strong> (FAROOQ SATTAR)</p>
-                                    <p>Items Price is Rs. {baseTotal} + 300 delivery </p>
-
-                                    <p className="text-green-700 pt-2">
-                                        Send payment screenshot on WhatsApp:&nbsp;
-                                        <a
-                                            href="https://wa.me/92542450992"
-                                            className="underline text-green-600"
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                        >
-                                            0542450992
-                                        </a>
-                                    </p>
+                                    <p>Delivery charges of <strong>Rs. 300</strong> must be sent in advance.</p>
+                                    <p>Send to: <strong>0307-6200531</strong> (FAROOQ SATTAR)</p>
                                 </>
                             )}
-
                             {(form.paymentMethod === 'EasyPaisa' || form.paymentMethod === 'Nayapay') && (
                                 <>
-                                    <p>Send Rs. {baseTotal} + 300 delivery to <strong>0307-6200531</strong></p>
-                                    <p>Account Holder: <strong>FAROOQ SATTAR</strong></p>
-                                    <p className="text-green-700 pt-2">
-                                        Send screenshot on WhatsApp: <a href="https://wa.me/92542450992" className="underline text-green-600" target="_blank" rel="noopener noreferrer">0542450992</a>
-                                    </p>
+                                    <p>Send Rs. {total} to <strong>0307-6200531</strong></p>
+                                    <p>Name: <strong>Farooq Sattar</strong></p>
                                 </>
                             )}
-
                             {form.paymentMethod === 'Bank Transfer' && (
                                 <>
-                                    <p>Transfer Rs. {baseTotal} + 300 delivery to:</p>
-                                    <p>IBAN: <strong>PK07UNIL0109000313197464</strong></p>
-                                    <p>Bank: <strong>UBL</strong></p>
+                                    <p>Transfer Rs. {total} to:</p>
+                                    <p>IBAN: <strong>PK07UNIL0109000313197464</strong> (UBL)</p>
                                     <p>Name: <strong>Farooq Sattar</strong></p>
-                                    <p className="text-green-700 pt-2">
-                                        Send screenshot on WhatsApp: <a href="https://wa.me/92542450992" className="underline text-green-600" target="_blank" rel="noopener noreferrer">0542450992</a>
-                                    </p>
                                 </>
                             )}
+                            <p className="text-green-700 pt-2">
+                                Send screenshot on WhatsApp:&nbsp;
+                                <a
+                                    href="https://wa.me/92542450992"
+                                    className="underline text-green-600"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                >
+                                    0542450992
+                                </a>
+                            </p>
                         </div>
                     )}
 
-                    {/* Total Summary */}
-                    <div className="pt-4 text-right space-y-1 text-[#a73e2c] text-sm sm:text-base">
+                    {/* Summary */}
+                    <div className="pt-4 text-right text-[#a73e2c] text-sm sm:text-base space-y-1">
                         <p>Subtotal: Rs. {baseTotal}</p>
                         {deliveryCharge > 0 && <p>Delivery Charges: Rs. {deliveryCharge}</p>}
                         <p className="text-lg font-semibold">Total: Rs. {total}</p>
@@ -214,16 +203,16 @@ function Checkout() {
                     {/* Submit Button */}
                     <button
                         onClick={handlePlaceOrder}
-                        className="w-full bg-[#a73e2c] hover:bg-[#922f1d] text-white py-3 rounded-md font-semibold text-lg transition-all duration-300"
+                        disabled={loading}
+                        className={`w-full flex items-center justify-center gap-2 ${loading ? 'bg-gray-400 cursor-not-allowed' : 'bg-[#a73e2c] hover:bg-[#922f1d]'
+                            } text-white py-3 rounded-md font-semibold text-lg transition-all duration-300`}
                     >
-                        <div className="flex items-center justify-center gap-2">
-                            <FaCashRegister className="text-white" />
-                            <span>Place Order</span>
-                        </div>
+                        <FaCashRegister className="text-white" />
+                        {loading ? 'Placing Order...' : 'Place Order'}
                     </button>
                 </div>
 
-                {/* WhatsApp Floating Button */}
+                {/* WhatsApp Button */}
                 <a
                     href="https://wa.me/92542450992"
                     target="_blank"
