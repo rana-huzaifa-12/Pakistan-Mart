@@ -93,7 +93,7 @@ function Home({ searchQuery = '' }) {
         { title: 'Mart Specials', icon: <FaCrown className="inline-block text-orange-400 mr-2" /> },
     ];
 
-    const images = ['/mybanner1.jpg', '/mybanner2.jpg', '/mybanner3.jpg', '/mybanner5.jpg', '/mybanner6.jpg'];
+    const images = ['/mybanner1.jpg', '/mybanner3.jpg', '/mybanner14.jpg', '/mybanner15.jpg'];
 
     return (
         <div className="min-h-screen bg-gradient-to-r from-orange-50 via-gray-300 to-gray-200 pb-6">
