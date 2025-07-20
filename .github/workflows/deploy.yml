@@ -12,6 +12,7 @@ jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
 
+    # 🔐 Set environment secrets from GitHub repo settings
     env:
       MONGO_URI: ${{ secrets.MONGO_URI }}
       JWT_SECRET: ${{ secrets.JWT_SECRET }}
@@ -37,6 +38,16 @@ jobs:
         working-directory: ./Frontend/client
         run: npm run build
 
-      # Optional: Run tests here if have any
+      # ✅ Optional: Add testing step here
+      # - name: ✅ Run Tests
+      #   working-directory: ./Backend
+      #   run: npm test
 
-      # can add deployment step here (e.g., to Vercel, Render, etc.)
+      # ✅ Optional: Deploy Step (Render/Vercel/etc.)
+      # Add your CLI deploy command here if using Vercel/Render
+      
+      # - name: 🚀 Deploy to Vercel
+      #   run: npx vercel --prod --token=${{ secrets.VERCEL_TOKEN }}
+
+      # - name: 🚀 Deploy to Render
+      #   run: curl -X POST ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
