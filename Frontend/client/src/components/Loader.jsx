@@ -24,7 +24,7 @@ function Loader() {
 
     return (
         <div className="flex justify-center items-center h-screen bg-[#03071e]">
-            <HashLoader color="#f97316" size={size} />
+            <HashLoader color="#f97316" size={size} speedMultiplier={2} />
         </div>
     );
 }

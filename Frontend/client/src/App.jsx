@@ -14,7 +14,7 @@ import Navbar2 from './components/Navbar2';
 import ScrollToTop from './components/ScrollToTop';
 import Contact from './components/Contact';
 import ProductDetails from './pages/ProductDetail';
-import Loader from './components/Loader'; // ✅ Import loader
+import Loader from './components/Loader';
 import { useLenis } from './hooks/useLenis';
 
 function App() {
@@ -33,7 +33,7 @@ function App() {
 
   return (
     <>
-      {loading && <Loader />} {/* ✅ Show loader when changing routes */}
+      {loading && <Loader />}
       <ScrollToTop />
       <Navbar onSearch={setSearchQuery} />
       <Navbar2 />
