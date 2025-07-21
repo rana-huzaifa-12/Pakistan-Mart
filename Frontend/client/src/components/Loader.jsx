@@ -1,10 +1,32 @@
-import React from 'react';
+import { useState, useEffect } from "react";
+import HashLoader from "react-spinners/HashLoader";
 
-export default function Loader() {
+function Loader() {
+    const [size, setSize] = useState(70); // Default size
+
+    useEffect(() => {
+        const updateSize = () => {
+            const width = window.innerWidth;
+            if (width < 640) {
+                setSize(40); // Mobile (sm)
+            } else if (width < 1024) {
+                setSize(60); // Tablet (md)
+            } else {
+                setSize(80); // Desktop (lg+)
+            }
+        };
+
+        updateSize(); // Initial check
+        window.addEventListener("resize", updateSize); // On resize
+
+        return () => window.removeEventListener("resize", updateSize); // Cleanup
+    }, []);
+
     return (
-        <div className="absolute inset-0 z-[50] flex flex-col items-center justify-center bg-gray-900 bg-opacity-20">
-            <div className="w-12 h-12 border-4 border-dashed border-orange-500 rounded-full animate-spin mb-3"></div>
-            <p className="text-orange-500 text-lg font-semibold animate-pulse">Loading...</p>
+        <div className="flex justify-center items-center h-screen bg-[#03071e]">
+            <HashLoader color="#f97316" size={size} />
         </div>
     );
 }
+
+export default Loader;

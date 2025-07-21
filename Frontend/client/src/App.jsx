@@ -24,10 +24,10 @@ function App() {
 
   useLenis();
 
-  // ✅ Trigger loader on route change
+  //  Trigger loader on route change
   useEffect(() => {
     setLoading(true);
-    const timer = setTimeout(() => setLoading(false), 500); // 0.7 sec loading
+    const timer = setTimeout(() => setLoading(false), 1000); // 1 sec loading
     return () => clearTimeout(timer);
   }, [location]);
 
