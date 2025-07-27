@@ -56,7 +56,7 @@ function Home({ searchQuery = '' }) {
                                 </h2>
 
                                 <p className="text-orange-600 font-semibold text-sm">Rs. {product.price}</p>
-                                {/* ✅ Truncated description with consistent height */}
+                                {/*  description with consistent height */}
                                 <p className="text-xs text-zinc-500 line-clamp-1 overflow-hidden">
                                     {product.description}
                                 </p>
