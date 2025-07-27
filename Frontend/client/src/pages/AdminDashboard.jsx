@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import toast from 'react-hot-toast';
+import { FaFolderOpen } from 'react-icons/fa';
+
 
 function AdminDashboard() {
     const [products, setProducts] = useState([]);
@@ -14,6 +16,8 @@ function AdminDashboard() {
         category: '',
     });
     const [editingId, setEditingId] = useState(null);
+    const [searchQuery, setSearchQuery] = useState("");
+
 
     const token = localStorage.getItem('adminToken');
     const authHeader = {
@@ -73,7 +77,7 @@ function AdminDashboard() {
                         'Content-Type': 'multipart/form-data',
                     },
                 });
-                toast.success('✅ Product updated!');
+                toast.success(' Product updated!');
             } else {
                 await axios.post(`http://localhost:5000/api/products`, payload, {
                     ...authHeader,
@@ -82,7 +86,7 @@ function AdminDashboard() {
                         'Content-Type': 'multipart/form-data',
                     },
                 });
-                toast.success('✅ Product added!');
+                toast.success(' Product added!');
             }
 
             setFormData({ name: '', price: '', image: null, description: '', category: '' });
@@ -114,25 +118,26 @@ function AdminDashboard() {
             toast.success('🗑️ Product deleted!');
             fetchProducts();
         } catch (err) {
-            toast.error('❌ Unauthorized or error deleting product');
+            toast.error(' Unauthorized or error deleting product');
         }
     };
 
-    // ✅ DELETE ORDER FUNCTION
+    // DELETE ORDER FUNCTION
     const handleOrderDelete = async (id) => {
         try {
             await axios.delete(`http://localhost:5000/api/orders/${id}`, authHeader);
             toast.success('🗑️ Order deleted!');
             fetchOrders();
         } catch (err) {
-            toast.error('❌ Error deleting order');
+            toast.error(' Error deleting order');
         }
     };
 
     return (
+
         <div className='bg-gradient-to-r from-orange-50 via-gray-200 to-gray-100'>
             <div className="p-4 sm:p-6 space-y-10 max-w-7xl mx-auto">
-                <h1 className="text-2xl sm:text-3xl font-bold text-gray-800">Admin Dashboard</h1>
+                <h1 className="text-2xl sm:text-4xl font-bold text-gray-800 mt-4 text-center">Admin Dashboard</h1>
 
                 {/* Form */}
                 <form
@@ -140,7 +145,7 @@ function AdminDashboard() {
                     className="bg-white rounded-lg shadow-md p-5 space-y-4"
                     encType="multipart/form-data"
                 >
-                    <h2 className="text-lg sm:text-xl font-semibold mb-1 text-gray-700">
+                    <h2 className="text-lg sm:text-xl font-semibold mb-4 text-gray-700">
                         {editingId ? '✏️ Edit Product' : '➕ Add New Product'}
                     </h2>
 
@@ -208,38 +213,74 @@ function AdminDashboard() {
                     </button>
                 </form>
 
+
+
+
                 {/* Product List */}
                 <section>
-                    <h2 className="text-xl font-semibold text-gray-800 mb-4">🗂️ Products</h2>
-                    <div className="grid gap-5 grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-                        {products.map((product) => (
-                            <div key={product._id} className="bg-white p-4 rounded-xl shadow-sm flex flex-col">
-                                <img
-                                    src={`http://localhost:5000/${product.image}`}
-                                    alt={product.name}
-                                    className="h-40 w-full object-cover rounded-md"
-                                />
-                                <h3 className="text-md font-bold mt-3 truncate">{product.name}</h3>
-                                <p className="text-sm text-gray-700">Rs. {product.price}</p>
+                    <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center gap-2">
+                        <FaFolderOpen className="text-orange-600" />
+                        Products
+                    </h2>
 
-                                <div className="flex justify-between mt-3 gap-2">
-                                    <button
-                                        onClick={() => handleEdit(product)}
-                                        className="flex-1 bg-blue-500 hover:bg-blue-600 text-white text-sm py-1 rounded"
-                                    >
-                                        Edit
-                                    </button>
-                                    <button
-                                        onClick={() => handleDelete(product._id)}
-                                        className="flex-1 bg-red-500 hover:bg-red-600 text-white text-sm py-1 rounded"
-                                    >
-                                        Delete
-                                    </button>
+                    {/*  Search Bar */}
+                    <div className="mb-4">
+                        <div className="relative w-full sm:w-1/2">
+                            <input
+                                type="text"
+                                placeholder="Search products..."
+                                className="w-full pl-10 pr-4 py-2 text-sm border border-gray-300 rounded-lg shadow-md focus:outline-none focus:ring focus:ring-black transition duration-200"
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                            />
+                            <svg
+                                className="absolute left-3 top-2.5 w-5 h-5 text-gray-400 pointer-events-none"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                viewBox="0 0 24 24"
+                                xmlns="http://www.w3.org/2000/svg"
+                            >
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 1110.5 3a7.5 7.5 0 016.15 13.65z" />
+                            </svg>
+                        </div>
+                    </div>
+
+
+                    <div className="grid gap-5 grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+                        {products
+                            .filter((product) =>
+                                product.name.toLowerCase().includes(searchQuery.toLowerCase())
+                            )
+                            .map((product) => (
+                                <div key={product._id} className="bg-white p-4 rounded-xl shadow-sm flex flex-col">
+                                    <img
+                                        src={`http://localhost:5000/${product.image}`}
+                                        alt={product.name}
+                                        className="h-40 w-full object-cover rounded-md"
+                                    />
+                                    <h3 className="text-md font-bold mt-3 truncate">{product.name}</h3>
+                                    <p className="text-sm text-gray-700">Rs. {product.price}</p>
+
+                                    <div className="flex justify-between mt-3 gap-2">
+                                        <button
+                                            onClick={() => handleEdit(product)}
+                                            className="flex-1 bg-blue-500 hover:bg-blue-600 text-white text-sm py-1 rounded"
+                                        >
+                                            Edit
+                                        </button>
+                                        <button
+                                            onClick={() => handleDelete(product._id)}
+                                            className="flex-1 bg-red-500 hover:bg-red-600 text-white text-sm py-1 rounded"
+                                        >
+                                            Delete
+                                        </button>
+                                    </div>
                                 </div>
-                            </div>
-                        ))}
+                            ))}
                     </div>
                 </section>
+
 
                 {/* Orders */}
                 <section className="mt-10">
