@@ -4,6 +4,9 @@ import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 import { FaWhatsapp, FaHome, FaTrashAlt, FaShoppingCart } from 'react-icons/fa';
 
+const API_BASE = import.meta.env.VITE_API_URL;
+
+
 function Cart() {
     const { cart, removeFromCart, clearCart } = useCart();
     const navigate = useNavigate();
@@ -31,7 +34,7 @@ function Cart() {
                                     className="flex flex-row items-start gap-3 sm:gap-4 bg-white shadow-sm hover:shadow-md transition-all rounded-xl p-2 sm:p-5"
                                 >
                                     <img
-                                        src={`http://localhost:5000/${item.image}`}
+                                        src={`${API_BASE.replace('/api', '')}/${item.image}`}
                                         alt={item.name}
                                         className="w-20 h-20 object-cover rounded-lg shadow-sm sm:w-24 sm:h-24"
                                     />

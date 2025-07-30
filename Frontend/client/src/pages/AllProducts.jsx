@@ -5,13 +5,16 @@ import toast from 'react-hot-toast';
 import { FaShoppingBag, FaWhatsapp } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 
+const API_BASE = import.meta.env.VITE_API_URL;
+
+
 function AllProducts({ searchQuery }) {
     const [products, setProducts] = useState([]);
     const { addToCart } = useContext(CartContext);
 
     const fetchProducts = async () => {
         try {
-            const res = await axios.get('http://localhost:5000/api/products');
+            const res = await axios.get(`${API_BASE}/products`);
             setProducts(res.data);
         } catch (err) {
             console.error(err);
@@ -60,7 +63,7 @@ function AllProducts({ searchQuery }) {
                                 {/* Image */}
                                 <div className="relative w-full h-40 sm:h-44 md:h-48 overflow-hidden rounded">
                                     <img
-                                        src={`http://localhost:5000/${product.image}`}
+                                        src={`${API_BASE.replace('/api', '')}/${product.image}`}
                                         alt={product.name}
                                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                                     />
@@ -99,7 +102,7 @@ function AllProducts({ searchQuery }) {
                 </div>
             )}
 
-            {/* ✅ Floating WhatsApp Button */}
+            {/* Floating WhatsApp Button */}
             <a
                 href="https://wa.me/92542450992"
                 target="_blank"

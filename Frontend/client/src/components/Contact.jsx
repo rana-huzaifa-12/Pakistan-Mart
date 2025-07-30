@@ -7,7 +7,7 @@ function Contact() {
             {/* Apple Map Embed */}
             <div className="w-full max-w-6xl h-[300px] sm:h-[400px] md:h-[500px] rounded-xl overflow-hidden shadow-lg mb-10">
                 <iframe
-                    title="Apple Maps Location"
+                    title="Google Maps Location"
                     src="https://www.google.com/maps?q=32.264290,75.159330&hl=es;z=14&output=embed"
                     width="100%"
                     height="100%"
@@ -23,6 +23,7 @@ function Contact() {
                 {/* Email */}
                 <a
                     href="mailto:pakistanmartskg@gmail.com"
+                    aria-label="Send Email"
                     className="flex flex-col items-center bg-orange-50 p-6 rounded-lg shadow-md hover:shadow-lg transition duration-300"
                 >
                     <FaEnvelope className="text-[#a73e2c] text-3xl mb-3" />

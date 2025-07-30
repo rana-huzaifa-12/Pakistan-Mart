@@ -4,6 +4,9 @@ import axios from 'axios';
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 
+const API_BASE = import.meta.env.VITE_API_URL;
+
+
 function OrderForm() {
     const { cart, clearCart } = useCart();
     const navigate = useNavigate();
@@ -31,7 +34,7 @@ function OrderForm() {
         }
 
         try {
-            await axios.post('http://localhost:5000/api/orders', {
+            await axios.post(`${API_BASE}/orders`, {
                 ...formData,
                 items: cart,
                 total,

@@ -3,6 +3,9 @@ import axios from 'axios';
 import toast from 'react-hot-toast';
 import { FaFolderOpen } from 'react-icons/fa';
 
+const API_BASE = import.meta.env.VITE_API_URL;
+
+
 
 function AdminDashboard() {
     const [products, setProducts] = useState([]);
@@ -28,7 +31,7 @@ function AdminDashboard() {
 
     const fetchProducts = async () => {
         try {
-            const res = await axios.get('http://localhost:5000/api/products');
+            const res = await axios.get(`${API_BASE}/products`);
             setProducts(res.data);
         } catch (err) {
             toast.error('Failed to fetch products');
@@ -37,7 +40,7 @@ function AdminDashboard() {
 
     const fetchOrders = async () => {
         try {
-            const res = await axios.get('http://localhost:5000/api/orders', authHeader);
+            const res = await axios.get(`${API_BASE}/orders`, authHeader);
             setOrders(res.data);
         } catch (err) {
             toast.error('Failed to fetch orders');
@@ -70,7 +73,7 @@ function AdminDashboard() {
 
         try {
             if (editingId) {
-                await axios.put(`http://localhost:5000/api/products/${editingId}`, payload, {
+                await axios.put(`${API_BASE}/products/${editingId}`, payload, {
                     ...authHeader,
                     headers: {
                         ...authHeader.headers,
@@ -79,7 +82,7 @@ function AdminDashboard() {
                 });
                 toast.success(' Product updated!');
             } else {
-                await axios.post(`http://localhost:5000/api/products`, payload, {
+                await axios.post(`${API_BASE}/products`, payload, {
                     ...authHeader,
                     headers: {
                         ...authHeader.headers,
@@ -114,7 +117,7 @@ function AdminDashboard() {
 
     const handleDelete = async (id) => {
         try {
-            await axios.delete(`http://localhost:5000/api/products/${id}`, authHeader);
+            await axios.delete(`${API_BASE}/products/${id}`, authHeader);
             toast.success('🗑️ Product deleted!');
             fetchProducts();
         } catch (err) {
@@ -125,7 +128,7 @@ function AdminDashboard() {
     // DELETE ORDER FUNCTION
     const handleOrderDelete = async (id) => {
         try {
-            await axios.delete(`http://localhost:5000/api/orders/${id}`, authHeader);
+            await axios.delete(`${API_BASE}/orders/${id}`, authHeader);
             toast.success('🗑️ Order deleted!');
             fetchOrders();
         } catch (err) {
@@ -255,7 +258,7 @@ function AdminDashboard() {
                             .map((product) => (
                                 <div key={product._id} className="bg-white p-4 rounded-xl shadow-sm flex flex-col">
                                     <img
-                                        src={`http://localhost:5000/${product.image}`}
+                                        src={`${API_BASE}/${product.image}`}
                                         alt={product.name}
                                         className="h-40 w-full object-cover rounded-md"
                                     />

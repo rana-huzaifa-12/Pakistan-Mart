@@ -8,6 +8,8 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
 import { Autoplay } from 'swiper/modules';
 import SwiperCarousel from '../components/SwiperCarousel';
+const API_BASE = import.meta.env.VITE_API_URL;
+
 
 
 function Home({ searchQuery = '' }) {
@@ -17,7 +19,7 @@ function Home({ searchQuery = '' }) {
     useEffect(() => {
         const fetchProducts = async () => {
             try {
-                const res = await axios.get('http://localhost:5000/api/products');
+                const res = await axios.get(`${API_BASE}/products`);
                 setProducts(res.data);
             } catch (err) {
                 console.error('Error fetching products:', err);
@@ -42,7 +44,7 @@ function Home({ searchQuery = '' }) {
                 >
                     <Link to={`/product/${product._id}`}>
                         <img
-                            src={`http://localhost:5000/${product.image}`}
+                            src={`${API_BASE.replace('/api', '')}/${product.image}`}
                             alt={product.name}
                             className="w-full h-40 sm:h-48 object-cover transition-transform duration-300 group-hover:scale-105"
                         />

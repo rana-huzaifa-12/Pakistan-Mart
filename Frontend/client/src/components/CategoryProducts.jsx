@@ -5,16 +5,19 @@ import toast from 'react-hot-toast';
 import { CartContext } from '../context/CartContext';
 import { FaCartPlus, FaWhatsapp } from 'react-icons/fa';
 
+const API_BASE = import.meta.env.VITE_API_URL;
+
+
 function CategoryProducts({ searchQuery }) {
     const { categoryName } = useParams();
     const [products, setProducts] = useState([]);
     const { addToCart } = useContext(CartContext);
-    const navigate = useNavigate(); // ✅ Hook to navigate programmatically
+    const navigate = useNavigate(); //  Hook to navigate programmatically
 
     useEffect(() => {
         const fetchCategoryProducts = async () => {
             try {
-                const res = await axios.get(`http://localhost:5000/api/products/category/${categoryName}`);
+                const res = await axios.get(`${API_BASE}/products/category/${categoryName}`);
                 setProducts(res.data);
             } catch (err) {
                 toast.error('❌ Could not load category products');
@@ -47,7 +50,7 @@ function CategoryProducts({ searchQuery }) {
                         >
                             <div className="overflow-hidden">
                                 <img
-                                    src={`http://localhost:5000/${product.image}`}
+                                    src={`${API_BASE}/${product.image}`}
                                     alt={product.name}
                                     className="w-full h-48 object-cover transition-transform duration-300 hover:scale-105"
                                 />

@@ -14,6 +14,8 @@ import {
     FaCashRegister
 } from 'react-icons/fa';
 
+const API_BASE = import.meta.env.VITE_API_URL;
+
 function Checkout() {
     const { cart, clearCart } = useCart();
     const navigate = useNavigate();
@@ -46,7 +48,7 @@ function Checkout() {
 
         setLoading(true);
         try {
-            await axios.post('http://localhost:5000/api/orders', {
+            await axios.post(`${API_BASE}/orders`, {
                 ...form,
                 items: cart,
                 total,

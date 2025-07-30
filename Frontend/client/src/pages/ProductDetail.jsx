@@ -1,8 +1,10 @@
 import { useParams } from 'react-router-dom';
 import { useEffect, useState, useContext } from 'react';
 import axios from 'axios';
-import { CartContext } from '../context/CartContext'; // ✅ Make sure this path is correct
-import toast from 'react-hot-toast'; // Optional: for notifications
+import { CartContext } from '../context/CartContext';
+import toast from 'react-hot-toast';
+const API_BASE = import.meta.env.VITE_API_URL;
+
 
 export default function ProductDetails() {
     const { productId } = useParams();
@@ -14,7 +16,7 @@ export default function ProductDetails() {
     useEffect(() => {
         const fetchProduct = async () => {
             try {
-                const res = await axios.get(`${import.meta.env.VITE_API_URL}/products/${productId}`);
+                const res = await axios.get(`${API_BASE}/products/${productId}`);
                 setProduct(res.data);
             } catch (err) {
                 console.error("Error fetching product:", err);
@@ -29,7 +31,7 @@ export default function ProductDetails() {
 
     const handleAddToCart = () => {
         if (product) {
-            addToCart(product); // ✅ Call context function
+            addToCart(product); //  Call context function
             toast.success(`${product.name} added to cart!`);
         }
     };
@@ -57,7 +59,7 @@ export default function ProductDetails() {
                 {/* Image */}
                 <div className="flex justify-center items-center bg-gray-50 p-5">
                     <img
-                        src={`http://localhost:5000/${product.image}`}
+                        src={`${API_BASE.replace('/api', '')}/${product.image}`}
                         alt={product.name}
                         className="rounded-xl w-full max-w-sm object-cover transition-transform duration-300 hover:scale-105 shadow-md"
                     />
