@@ -5,16 +5,23 @@ import 'swiper/css';
 
 const projectImages = [
     { src: '/m1.jpg' },
-    { src: '/m6.jpg' },
-    { src: '/m4.jpg' },
-    { src: '/m7.jpg' },
-    { src: '/m1.jpg' },
-    { src: '/m6.jpg' },
+    { src: '/m2.jpg' },
     { src: '/m3.jpg' },
-    { src: '/m7.jpg' },
     { src: '/m4.jpg' },
     { src: '/m5.jpg' },
     { src: '/m6.jpg' },
+    { src: '/m7.jpg' },
+    { src: '/m8.jpg' },
+    { src: '/m9.jpg' },
+    { src: '/m10.jpg' },
+    { src: '/m11.jpg' },
+    { src: '/m12.jpg' },
+    { src: '/m13.jpg' },
+    { src: '/m14.jpg' },
+    { src: '/m15.jpg' },
+    { src: '/m16.jpg' },
+    { src: '/m17.jpg' },
+    { src: '/m18.jpg' }
 ];
 
 const SimpleSwiper = () => {
