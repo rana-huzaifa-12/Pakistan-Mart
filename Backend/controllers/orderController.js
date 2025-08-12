@@ -1,24 +1,28 @@
 const Order = require('../models/Order');
-const sendEmail = require('../utils/sendEmail');
+const { sendOwnerEmail, sendCustomerEmail } = require('../utils/sendEmail');
 
 // @desc  Place an order and send emails
 exports.placeOrder = async (req, res) => {
     try {
         const { name, email, phone, address, items, total, paymentMethod } = req.body;
 
+        // ✅ Basic validation
         if (!name || !email || !phone || !address || !items || !total || !paymentMethod) {
             return res.status(400).json({ message: 'All fields are required.' });
         }
 
-        const newOrder = new Order({ name, email, phone, address, items, paymentMethod });
+        // ✅ Save order to DB
+        const newOrder = new Order({ name, email, phone, address, items, total, paymentMethod });
         await newOrder.save();
 
+        // ✅ Prepare order details
         const itemList = items
             .map(i => `• ${i.name} (x${i.quantity}) - Rs. ${i.price}`)
             .join('\n');
 
-        const time = new Date().toLocaleString();
+        const time = new Date().toLocaleString('en-PK', { timeZone: 'Asia/Karachi' });
 
+        // 📧 Admin notification
         const adminMessage = `
 🛍️ NEW ORDER RECEIVED
 
@@ -33,8 +37,9 @@ ${itemList}
 
 💰 Total: Rs. ${total}
 🕒 ${time}
-`;
+        `;
 
+        // 📧 Customer confirmation
         const customerMessage = `
 Dear ${name},
 
@@ -52,12 +57,15 @@ We’ll process your order shortly. If you have any questions, just reply to thi
 
 🕒 ${time}
 - Pakistan Mart Team
-`;
+        `;
 
-        await sendEmail(process.env.NOTIFY_EMAIL, '🛒 New Order - Pakistan Mart', adminMessage);
-        await sendEmail(email, '✅ Your Order Confirmation - Pakistan Mart', customerMessage);
+        // ✅ Send separate emails
+        await sendOwnerEmail('🛒 New Order - Pakistan Mart', adminMessage, email);
+        await sendCustomerEmail(email, '✅ Your Order Confirmation - Pakistan Mart', customerMessage);
 
-        res.status(201).json({ message: 'Order placed. Confirmation sent to admin and customer.' });
+        res.status(201).json({
+            message: 'Order placed. Confirmation sent to admin and customer.'
+        });
     } catch (err) {
         console.error('❌ Order placement failed', err);
         res.status(500).json({ message: 'Server error. Order not placed.' });

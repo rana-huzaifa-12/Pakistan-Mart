@@ -258,7 +258,7 @@ function AdminDashboard() {
                             .map((product) => (
                                 <div key={product._id} className="bg-white p-4 rounded-xl shadow-sm flex flex-col">
                                     <img
-                                        src={`${API_BASE}/${product.image}`}
+                                        src={`${API_BASE.replace('/api', '')}/${product.image}`}
                                         alt={product.name}
                                         className="h-40 w-full object-cover rounded-md"
                                     />

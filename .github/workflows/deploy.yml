@@ -1,53 +1,70 @@
-# .github/workflows/deploy.yml
-
 name: PAKISTAN MART CI/CD Pipeline
 
 on:
   push:
-    branches: [main]
-  pull_request:
     branches: [main]
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
 
-    # 🔐 Set environment secrets from GitHub repo settings
     env:
       MONGO_URI: ${{ secrets.MONGO_URI }}
       JWT_SECRET: ${{ secrets.JWT_SECRET }}
+      VPS_USER: ${{ secrets.VPS_USER }}
+      VPS_HOST: ${{ secrets.VPS_HOST }}
+      VPS_PORT: ${{ secrets.VPS_PORT }}
+      VPS_PATH: ${{ secrets.VPS_PATH }}
 
     steps:
+      # 1️⃣ Checkout Code
       - name: 🔄 Checkout code
         uses: actions/checkout@v3
 
+      # 2️⃣ Set up Node.js
       - name: 🟢 Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 18
 
+      # 3️⃣ Install Backend Dependencies
       - name: 📦 Install Backend Dependencies
         working-directory: ./Backend
         run: npm install
 
+      # 4️⃣ Install Frontend Dependencies
       - name: 📦 Install Frontend Dependencies
         working-directory: ./Frontend/client
         run: npm install
 
+      # 5️⃣ Build Frontend
       - name: 🛠️ Build Frontend
         working-directory: ./Frontend/client
         run: npm run build
 
-      # ✅ Optional: Add testing step here
-      # - name: ✅ Run Tests
-      #   working-directory: ./Backend
-      #   run: npm test
+      # 6️⃣ Upload Files to VPS (only needed parts)
+      - name: 📤 Upload files to VPS
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          port: ${{ secrets.VPS_PORT }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          source: "Backend/*, Frontend/client/build/*, package.json"
+          target: ${{ secrets.VPS_PATH }}
 
-      # ✅ Optional: Deploy Step (Render/Vercel/etc.)
-      # Add your CLI deploy command here if using Vercel/Render
-      
-      # - name: 🚀 Deploy to Vercel
-      #   run: npx vercel --prod --token=${{ secrets.VERCEL_TOKEN }}
-
-      # - name: 🚀 Deploy to Render
-      #   run: curl -X POST ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
+      # 7️⃣ SSH into VPS and Restart App
+      - name: 🚀 SSH and restart app
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          port: ${{ secrets.VPS_PORT }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          script: |
+            cd ${{ secrets.VPS_PATH }}/Backend
+            npm install --production
+            pm2 restart pakistan-mart || pm2 start server.js --name pakistan-mart \
+              --env NODE_ENV=production \
+              --env MONGO_URI=${MONGO_URI} \
+              --env JWT_SECRET=${JWT_SECRET}

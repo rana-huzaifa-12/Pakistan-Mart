@@ -3,18 +3,18 @@ import axios from 'axios';
 import { CartContext } from '../context/CartContext';
 import toast from 'react-hot-toast';
 import { FaWhatsapp, FaStar, FaFire, FaThumbsUp, FaTags, FaGift, FaBolt, FaRocket, FaCrown, FaCartPlus } from 'react-icons/fa';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
 import { Autoplay } from 'swiper/modules';
 import SwiperCarousel from '../components/SwiperCarousel';
+
 const API_BASE = import.meta.env.VITE_API_URL;
-
-
 
 function Home({ searchQuery = '' }) {
     const [products, setProducts] = useState([]);
     const { addToCart } = useContext(CartContext);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchProducts = async () => {
@@ -35,7 +35,7 @@ function Home({ searchQuery = '' }) {
     );
 
     const renderProducts = (items) => (
-        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-5">
+        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
             {items.map((product) => (
                 <div
                     key={product._id}
@@ -58,15 +58,11 @@ function Home({ searchQuery = '' }) {
                                 </h2>
 
                                 <p className="text-orange-600 font-semibold text-sm">Rs. {product.price}</p>
-                                {/*  description with consistent height */}
                                 <p className="text-xs text-zinc-500 line-clamp-1 overflow-hidden">
                                     {product.description}
                                 </p>
-
                             </Link>
                         </div>
-
-
 
                         <button
                             onClick={() => {
@@ -79,9 +75,8 @@ function Home({ searchQuery = '' }) {
                         </button>
                     </div>
                 </div>
-            ))
-            }
-        </div >
+            ))}
+        </div>
     );
 
     const sectionTitles = [
@@ -95,10 +90,10 @@ function Home({ searchQuery = '' }) {
         { title: 'Mart Specials', icon: <FaCrown className="inline-block text-orange-400 mr-2" /> },
     ];
 
-    const images = ['/mybanner1.jpg', , '/mybanner15.jpg', '/mybanner3.jpg', '/mybanner14.jpg'];
+    const images = ['/mybanner1.jpg', '/mybanner15.jpg', '/mybanner3.jpg', '/mybanner14.jpg'];
 
     return (
-        <div className="min-h-screen bg-gradient-to-r from-orange-50 via-gray-300 to-gray-200 pb-6">
+        <div className="min-h-screen bg-gradient-to-r from-orange-100 via-gray-300 to-gray-200 pb-6">
             <div className="w-full my-6">
                 <Swiper modules={[Autoplay]} autoplay={{ delay: 3000, disableOnInteraction: false }} loop={true} slidesPerView={1}>
                     {images.map((src, index) => (
@@ -121,10 +116,10 @@ function Home({ searchQuery = '' }) {
             ) : (
                 <>
                     {Array.from({ length: 8 }).map((_, index) => {
-                        const sectionProducts = products.slice(index * 10, (index + 1) * 10);
+                        const sectionProducts = products.slice(index * 8, (index + 1) * 8);
                         return (
                             sectionProducts.length > 0 && (
-                                <section key={index} className="p-4 sm:p-6 max-w-7xl mx-auto mt-6 bg-white rounded-md">
+                                <section key={index} className="p-4 sm:p-6 max-w-7xl mx-auto mt-6 rounded-md">
                                     <h2 className="text-2xl sm:text-3xl font-bold text-center text-orange-400 mb-6 sm:mb-8 bg-[#03071e] py-2 flex justify-center items-center gap-2">
                                         {sectionTitles[index]?.icon}
                                         {sectionTitles[index]?.title}
@@ -143,7 +138,6 @@ function Home({ searchQuery = '' }) {
                 </>
             )}
 
-            {/* WhatsApp Floating Button */}
             <a
                 href="https://wa.me/92542450992"
                 target="_blank"

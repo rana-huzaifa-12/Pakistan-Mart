@@ -19,7 +19,7 @@ const projectImages = [
 
 const SimpleSwiper = () => {
     return (
-        <div className="py-12 bg-gradient-to-r from-orange-50 via-gray-300 to-gray-200">
+        <div className="py-6 md:py-12 bg-gradient-to-r from-orange-100 via-gray-300 to-gray-200">
             <h2 className="text-3xl sm:text-4xl font-bold text-center text-zinc-800 mb-10">
                 <span className="text-orange-500">Products</span> Showcase
             </h2>
@@ -47,16 +47,18 @@ const SimpleSwiper = () => {
                 >
                     {projectImages.map((item, index) => (
                         <SwiperSlide key={index}>
-                            <div className="rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300">
+                            <div className="mx-auto w-[95%] sm:w-[95%] md:w-[98%] lg:w-full rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300">
                                 <img
                                     src={item.src}
-                                    className="w-full h-64 object-cover"
+                                    className="w-full h-[180px] sm:h-[220px] md:h-[260px] lg:h-64 object-cover"
                                 />
                             </div>
                         </SwiperSlide>
                     ))}
                 </Swiper>
             </div>
+
+
         </div>
     );
 };

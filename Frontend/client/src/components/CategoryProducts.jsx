@@ -33,7 +33,7 @@ function CategoryProducts({ searchQuery }) {
     );
 
     return (
-        <div className="min-h-screen bg-gradient-to-r from-orange-50 via-gray-200 to-gray-100 px-4 py-12 relative">
+        <div className="min-h-screen bg-gradient-to-r from-orange-100 via-gray-200 to-gray-100 px-4 py-12 relative">
             <h1 className="text-center text-3xl sm:text-4xl font-bold text-orange-400 bg-gray-900 py-2 mb-10 uppercase tracking-wider">
                 {categoryName}
             </h1>

@@ -31,7 +31,7 @@ function AllProducts({ searchQuery }) {
     );
 
     return (
-        <div className="min-h-screen bg-gradient-to-r from-orange-50 via-gray-200 to-gray-100 py-8 px-3 sm:px-5">
+        <div className="min-h-screen bg-gradient-to-r from-orange-100 via-gray-200 to-gray-100 py-8 px-3 sm:px-5">
             <div className="w-full">
                 <img
                     src="/mybanner1.jpg"
