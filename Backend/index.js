@@ -15,12 +15,7 @@ dotenv.config();
 
 //  Create Express App
 const app = express();
-app.use(cors({
-    origin: 'https://pakistan-mart-kzrs.onrender.com',  // your frontend URL
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    credentials: true
-}));
-
+app.use(cors());
 app.use(express.json());
 
 //  Serve image uploads
