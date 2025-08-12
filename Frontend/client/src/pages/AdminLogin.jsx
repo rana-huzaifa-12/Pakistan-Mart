@@ -17,13 +17,14 @@ function AdminLogin() {
         setError('');
 
         try {
-            const res = await axios.post(`${API_BASE}/auth/login`, { email, password });
+            const res = await axios.post(`${API_BASE}/api/auth/login`, { email, password });
             localStorage.setItem('adminToken', res.data.token);
             navigate('/admin/dashboard');
         } catch (err) {
             setError('Invalid email or password');
         }
     };
+
 
     return (
         <div
