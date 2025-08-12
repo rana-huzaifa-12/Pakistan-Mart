@@ -53,19 +53,19 @@ const SimpleSwiper = () => {
                     modules={[Autoplay]}
                 >
                     {projectImages.map((item, index) => (
-                        <SwiperSlide key={index}>
-                            <div className="mx-auto w-[95%] sm:w-[95%] md:w-[98%] lg:w-full rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300">
+                        <SwiperSlide key={index} className="flex justify-center">
+                            <div className="w-full h-full rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300">
                                 <img
                                     src={item.src}
-                                    className="w-full h-[180px] sm:h-[220px] md:h-[260px] lg:h-64 object-cover"
+                                    alt={`product-${index}`}
+                                    className="w-full h-full object-cover"
+                                    style={{ aspectRatio: '4 / 3', minHeight: '250px' }}
                                 />
                             </div>
                         </SwiperSlide>
                     ))}
                 </Swiper>
             </div>
-
-
         </div>
     );
 };
