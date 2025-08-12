@@ -4,17 +4,17 @@ import { Autoplay } from 'swiper/modules';
 import 'swiper/css';
 
 const projectImages = [
-    { src: '/i1.jpg' },
-    { src: '/i6.jpg' },
-    { src: '/i4.jpg' },
-    { src: '/i7.jpg' },
-    { src: '/i1.jpg' },
-    { src: '/i6.jpg' },
-    { src: '/i3.jpg' },
-    { src: '/i7.jpg' },
-    { src: '/i4.jpg' },
-    { src: '/i5.jpg' },
-    { src: '/i6.jpg' },
+    { src: '/m1.jpg' },
+    { src: '/m6.jpg' },
+    { src: '/m4.jpg' },
+    { src: '/m7.jpg' },
+    { src: '/m1.jpg' },
+    { src: '/m6.jpg' },
+    { src: '/m3.jpg' },
+    { src: '/m7.jpg' },
+    { src: '/m4.jpg' },
+    { src: '/m5.jpg' },
+    { src: '/m6.jpg' },
 ];
 
 const SimpleSwiper = () => {
