@@ -1,4 +1,4 @@
-const Order = require('../models/Order');
+const Order = require('../models/order');
 const { sendOwnerEmail, sendCustomerEmail } = require('../utils/sendEmail');
 
 // @desc  Place an order and send emails
