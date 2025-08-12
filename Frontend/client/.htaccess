@@ -1,7 +1,14 @@
-# Redirect all requests to index.html except existing files/folders
+# Enable rewriting
 RewriteEngine On
 RewriteBase /
 
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
+# If the requested file or directory exists, serve it
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+# Otherwise, send all requests to index.html
 RewriteRule ^ index.html [L]
+
+# Custom 404 handler (optional)
+ErrorDocument 404 /index.html

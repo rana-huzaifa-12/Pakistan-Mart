@@ -1,8 +1,9 @@
 # .gitignore in root (mern/.gitignore)
 node_modules/
-backend/.env
-frontend/client/.env
+# backend/.env
+# frontend/client/.env
 frontend/client/node_modules/
 backend/node_modules/
 dist/
 .vite/
+.vercel
