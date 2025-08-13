@@ -1,17 +1,19 @@
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useEffect, useState, useContext } from 'react';
 import axios from 'axios';
 import { CartContext } from '../context/CartContext';
 import toast from 'react-hot-toast';
-const API_BASE = import.meta.env.VITE_API_URL;
+import { FaShoppingCart } from 'react-icons/fa';
 
+const API_BASE = import.meta.env.VITE_API_URL;
 
 export default function ProductDetails() {
     const { productId } = useParams();
     const [product, setProduct] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const { addToCart } = useContext(CartContext); // ✅ access addToCart function
+    const { addToCart } = useContext(CartContext);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchProduct = async () => {
@@ -25,15 +27,18 @@ export default function ProductDetails() {
                 setLoading(false);
             }
         };
-
         fetchProduct();
     }, [productId]);
 
     const handleAddToCart = () => {
         if (product) {
-            addToCart(product); //  Call context function
+            addToCart(product);
             toast.success(`${product.name} added to cart!`);
         }
+    };
+
+    const goToCart = () => {
+        navigate('/cart');
     };
 
     if (loading) {
@@ -79,12 +84,22 @@ export default function ProductDetails() {
                         Rs {product.price}
                     </div>
 
-                    <button
-                        onClick={handleAddToCart} // ✅ now adds product to cart
-                        className="mt-4 w-full sm:w-1/2 bg-orange-500 hover:bg-gray-500 text-white font-semibold py-2 px-5 rounded-lg transition-all duration-500 shadow-md"
-                    >
-                        Add to Cart
-                    </button>
+                    <div className="flex flex-col sm:flex-row gap-4 mt-4">
+                        <button
+                            onClick={handleAddToCart}
+                            className="flex-1 bg-orange-500 hover:bg-gray-500 text-white font-semibold py-2 px-5 rounded-lg transition-all duration-500 shadow-md flex items-center justify-center gap-2"
+                        >
+                            <FaShoppingCart /> Add to Cart
+                        </button>
+
+                        <button
+                            onClick={goToCart}
+                            className="flex-1 bg-gray-800 hover:bg-orange-500 text-orange-400 hover:text-white font-semibold py-2 px-5 rounded-lg transition-all duration-500 shadow-md flex items-center justify-center gap-2"
+                        >
+                            <FaShoppingCart /> Go to Cart
+                        </button>
+
+                    </div>
                 </div>
             </div>
         </section>
