@@ -1,5 +1,3 @@
-// backend/controllers/productController.js
-
 const Product = require('../models/product');
 const { cloudinary } = require('../cloudinaryConfig');
 
@@ -43,9 +41,22 @@ exports.getProductById = async (req, res) => {
 exports.createProduct = async (req, res) => {
     try {
         const { name, description, price, category } = req.body;
-        const image = req.file ? req.file.path : ''; // Cloudinary URL
+        let imageUrl = '';
+        let imagePublicId = '';
 
-        const newProduct = new Product({ name, description, price, category, image });
+        if (req.file) {
+            imageUrl = req.file.path; // URL of uploaded image
+            imagePublicId = req.file.filename; // public_id from multer-storage-cloudinary
+        }
+
+        const newProduct = new Product({
+            name,
+            description,
+            price,
+            category,
+            image: imageUrl,
+            imagePublicId // store public_id for deletion
+        });
         await newProduct.save();
 
         res.status(201).json(newProduct);
@@ -55,7 +66,7 @@ exports.createProduct = async (req, res) => {
     }
 };
 
-// PUT update existing product, update image only if new one uploaded
+// PUT update existing product
 exports.updateProduct = async (req, res) => {
     try {
         const { name, description, price, category } = req.body;
@@ -69,16 +80,15 @@ exports.updateProduct = async (req, res) => {
         product.price = price || product.price;
         product.category = category || product.category;
 
-        // Update image if new file uploaded via Cloudinary
-        if (req.file && req.file.path) {
+        // Update image if new file uploaded
+        if (req.file) {
             // Delete previous image from Cloudinary if exists
-            if (product.image) {
-                const segments = product.image.split('/');
-                const filename = segments[segments.length - 1]; // e.g., my-image.jpg
-                const publicId = `products/${filename.split('.')[0]}`; // products/my-image
-                await cloudinary.uploader.destroy(publicId);
+            if (product.imagePublicId) {
+                await cloudinary.uploader.destroy(product.imagePublicId);
             }
+
             product.image = req.file.path;
+            product.imagePublicId = req.file.filename;
         }
 
         const updatedProduct = await product.save();
@@ -89,18 +99,15 @@ exports.updateProduct = async (req, res) => {
     }
 };
 
-// DELETE product by ID (also delete image from Cloudinary)
+// DELETE product by ID
 exports.deleteProduct = async (req, res) => {
     try {
         const product = await Product.findById(req.params.id);
         if (!product) return res.status(404).json({ message: 'Product not found' });
 
         // Delete image from Cloudinary if exists
-        if (product.image) {
-            const segments = product.image.split('/');
-            const filename = segments[segments.length - 1]; // e.g., my-image.jpg
-            const publicId = `products/${filename.split('.')[0]}`; // products/my-image
-            await cloudinary.uploader.destroy(publicId);
+        if (product.imagePublicId) {
+            await cloudinary.uploader.destroy(product.imagePublicId);
         }
 
         await Product.findByIdAndDelete(req.params.id);
