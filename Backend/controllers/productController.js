@@ -1,3 +1,5 @@
+// backend/controllers/productController.js
+
 const Product = require('../models/product');
 const { cloudinary } = require('../cloudinaryConfig');
 
@@ -72,9 +74,9 @@ exports.updateProduct = async (req, res) => {
             // Delete previous image from Cloudinary if exists
             if (product.image) {
                 const segments = product.image.split('/');
-                const filename = segments[segments.length - 1];
-                const public_id = filename.split('.')[0];
-                await cloudinary.uploader.destroy(`products/${public_id}`);
+                const filename = segments[segments.length - 1]; // e.g., my-image.jpg
+                const publicId = `products/${filename.split('.')[0]}`; // products/my-image
+                await cloudinary.uploader.destroy(publicId);
             }
             product.image = req.file.path;
         }
@@ -96,9 +98,9 @@ exports.deleteProduct = async (req, res) => {
         // Delete image from Cloudinary if exists
         if (product.image) {
             const segments = product.image.split('/');
-            const filename = segments[segments.length - 1];
-            const public_id = filename.split('.')[0];
-            await cloudinary.uploader.destroy(`products/${public_id}`);
+            const filename = segments[segments.length - 1]; // e.g., my-image.jpg
+            const publicId = `products/${filename.split('.')[0]}`; // products/my-image
+            await cloudinary.uploader.destroy(publicId);
         }
 
         await Product.findByIdAndDelete(req.params.id);

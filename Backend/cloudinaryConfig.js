@@ -12,12 +12,12 @@ cloudinary.config({
 const storage = new CloudinaryStorage({
     cloudinary,
     params: async (req, file) => {
-        // You can change folder based on category or use a default folder
         const folder = req.body.category || 'products';
         return {
             folder,
             allowed_formats: ['jpg', 'jpeg', 'png'],
-            public_id: file.originalname.split('.')[0], // filename without extension
+            // Use original name + timestamp to avoid overwriting
+            public_id: `${file.originalname.split('.')[0]}-${Date.now()}`,
         };
     },
 });

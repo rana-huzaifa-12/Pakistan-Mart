@@ -1,23 +1,21 @@
+// backend/routes/productRoutes.js
 const express = require('express');
 const router = express.Router();
 const verifyToken = require('../middleware/authMiddleware');
 const multer = require('multer');
-const { storage } = require('../cloudinaryConfig');  // import Cloudinary storage
+const { storage } = require('../cloudinaryConfig');
 
-// Controllers
 const {
     getAllProducts,
     getProductsByCategory,
     getProductById,
     createProduct,
     updateProduct,
-    deleteProduct
+    deleteProduct,
 } = require('../controllers/productController');
 
-// Use multer with Cloudinary storage instead of local disk storage
 const upload = multer({ storage });
 
-// Routes
 router.get('/', getAllProducts);
 router.get('/category/:category', getProductsByCategory);
 router.get('/:id', getProductById);
