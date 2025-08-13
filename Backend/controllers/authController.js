@@ -11,7 +11,7 @@ const login = (req, res) => {
     const { email, password } = req.body;
 
     if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
-        const token = jwt.sign({ email }, JWT_SECRET, { expiresIn: '1h' });
+        const token = jwt.sign({ email }, JWT_SECRET, { expiresIn: '1d' });
         res.json({ token });
     } else {
         res.status(401).json({ error: 'Invalid credentials' });
