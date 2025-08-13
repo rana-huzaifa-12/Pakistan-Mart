@@ -90,16 +90,23 @@ function Home({ searchQuery = '' }) {
         { title: 'Mart Specials', icon: <FaCrown className="inline-block text-orange-400 mr-2" /> },
     ];
 
-    const images = ['/mybanner1.jpg', '/mybanner15.jpg', '/mybanner3.jpg', '/mybanner14.jpg'];
+    const images = ['/mybanner1.jpg', '/mybanner15.jpg', '/mybanner11.jpg', '/mybanner14.jpg'];
 
     return (
-        <div className="min-h-screen bg-gradient-to-r from-orange-100 via-gray-300 to-gray-200 pb-6">
-            <div className="w-full my-6">
+        <div className="min-h-screen bg-gradient-to-r from-orange-100 via-gray-300 to-gray-200 pb-6 pt-2">
+            <div className="w-full my-2">
                 <Swiper modules={[Autoplay]} autoplay={{ delay: 3000, disableOnInteraction: false }} loop={true} slidesPerView={1}>
                     {images.map((src, index) => (
                         <SwiperSlide key={index}>
-                            <img src={src} alt={`Banner ${index + 1}`} className="w-full h-[180px] sm:h-[280px] md:h-[400px] lg:h-[500px] object-cover" />
+                            <div className="p-4 md: md:py-0"> {/* adds padding on all sides */}
+                                <img
+                                    src={src}
+                                    alt={`Banner ${index + 1}`}
+                                    className="w-full h-[180px] sm:h-[280px] md:h-[400px] lg:h-[580px] object-cover rounded-lg"
+                                />
+                            </div>
                         </SwiperSlide>
+
                     ))}
                 </Swiper>
             </div>
