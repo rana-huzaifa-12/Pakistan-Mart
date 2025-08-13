@@ -54,19 +54,25 @@ exports.createProduct = async (req, res) => {
     }
 };
 
-// PUT update existing product, update image if new one uploaded
+// PUT update existing product, update image only if new one uploaded
 exports.updateProduct = async (req, res) => {
     try {
         const { name, description, price, category } = req.body;
-        const updateData = { name, description, price, category };
 
-        // Only update image URL if new image uploaded via Cloudinary
-        if (req.file) updateData.image = req.file.path;
+        // Find the existing product first
+        const product = await Product.findById(req.params.id);
+        if (!product) return res.status(404).json({ message: 'Product not found' });
 
-        const updatedProduct = await Product.findByIdAndUpdate(req.params.id, updateData, {
-            new: true,
-        });
+        // Update fields if provided
+        product.name = name || product.name;
+        product.description = description || product.description;
+        product.price = price || product.price;
+        product.category = category || product.category;
 
+        // Only update image if new file uploaded via Cloudinary
+        if (req.file && req.file.path) product.image = req.file.path;
+
+        const updatedProduct = await product.save();
         res.json(updatedProduct);
     } catch (err) {
         console.error('Error updating product:', err);
