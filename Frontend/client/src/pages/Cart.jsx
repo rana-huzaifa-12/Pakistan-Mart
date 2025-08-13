@@ -6,7 +6,6 @@ import { FaWhatsapp, FaHome, FaTrashAlt, FaShoppingCart } from 'react-icons/fa';
 
 const API_BASE = import.meta.env.VITE_API_URL;
 
-
 function Cart() {
     const { cart, removeFromCart, clearCart } = useCart();
     const navigate = useNavigate();
@@ -22,7 +21,7 @@ function Cart() {
 
                 {cart.length === 0 ? (
                     <div className="text-center text-zinc-600 text-sm sm:text-xl mt-12 sm:mt-16">
-                        Your cart is currently empty.
+                        Your cart is currently empty..
                     </div>
                 ) : (
                     <>
@@ -75,24 +74,24 @@ function Cart() {
                         </div>
 
                         {/* Cart Total + Actions */}
-                        <div className="mt-6 sm:mt-10 bg-white rounded-xl sm:rounded-2xl shadow-md p-4 sm:p-6">
+                        <div className="mt-6 sm:mt-10  rounded-xl sm:rounded-2xl  p-4 sm:p-6">
                             <div className="text-right">
                                 <h2 className="text-lg sm:text-2xl font-bold text-[#03071e]">
                                     Total: <span className="text-orange-500">Rs. {total}</span>
                                 </h2>
                             </div>
 
-                            <div className="flex flex-col sm:flex-row justify-end gap-2 sm:gap-4 mt-4 sm:mt-6">
+                            <div className="flex flex-row justify-end gap-2 mt-4 sm:mt-6">
                                 <button
                                     onClick={clearCart}
-                                    className="bg-gray-400 hover:bg-gray-500 text-white px-3 py-1.5 sm:px-4 sm:py-2 rounded-md transition w-full sm:w-auto text-xs sm:text-sm"
+                                    className="bg-gray-400 hover:bg-gray-500 text-white px-3 py-1.5 sm:px-4 sm:py-2 rounded-md transition text-xs sm:text-sm"
                                 >
                                     Clear Cart
                                 </button>
 
                                 <button
                                     onClick={() => navigate('/checkout')}
-                                    className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-1.5 sm:px-5 sm:py-2 rounded-md font-semibold transition w-full sm:w-auto text-xs sm:text-sm"
+                                    className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-1.5 sm:px-5 sm:py-2 rounded-md font-semibold transition text-xs sm:text-sm"
                                 >
                                     Go to Checkout
                                 </button>
@@ -105,7 +104,7 @@ function Cart() {
                 <div className="mt-6 sm:mt-10">
                     <button
                         onClick={() => navigate('/')}
-                        className="flex items-center justify-center gap-2 sm:gap-3 bg-[#03071e] hover:bg-zinc-800 text-white px-4 py-1.5 sm:px-5 sm:py-2 rounded-md transition w-full sm:w-auto text-xs sm:text-sm"
+                        className="flex items-center justify-center gap-2 sm:gap-3 bg-[#03071e] hover:bg-zinc-800 text-white px-4 py-2 sm:px-5 sm:py-4 rounded-md transition w-full sm:w-auto text-xs sm:text-sm"
                     >
                         <FaHome />
                         Return to Homepage
