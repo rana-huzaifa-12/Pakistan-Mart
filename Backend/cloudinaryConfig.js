@@ -1,6 +1,6 @@
-// backend/cloudinaryConfig.js
 const cloudinary = require('cloudinary').v2;
 const { CloudinaryStorage } = require('multer-storage-cloudinary');
+const multer = require('multer');
 require('dotenv').config();
 
 cloudinary.config({
@@ -11,15 +11,13 @@ cloudinary.config({
 
 const storage = new CloudinaryStorage({
     cloudinary,
-    params: async (req, file) => {
-        const folder = req.body.category || 'products';
-        return {
-            folder,
-            allowed_formats: ['jpg', 'jpeg', 'png'],
-            // Use original name + timestamp to avoid overwriting
-            public_id: `${file.originalname.split('.')[0]}-${Date.now()}`,
-        };
-    },
+    params: async (req, file) => ({
+        folder: req.body.category || 'products',
+        allowed_formats: ['jpg', 'jpeg', 'png'],
+        transformation: [{ width: 800, height: 800, crop: 'limit' }],
+    }),
 });
 
-module.exports = { cloudinary, storage };
+const parser = multer({ storage });
+
+module.exports = { cloudinary, parser };
