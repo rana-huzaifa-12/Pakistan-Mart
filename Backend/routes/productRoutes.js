@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const verifyToken = require('../middleware/authMiddleware');
-const { parser } = require('../cloudinaryConfig');
+const { parser } = require('../cloudinaryConfig'); // multer/Cloudinary parser
 
 const {
     getAllProducts,
@@ -12,9 +12,12 @@ const {
     deleteProduct,
 } = require('../controllers/productController');
 
+// Public routes
 router.get('/', getAllProducts);
 router.get('/category/:category', getProductsByCategory);
 router.get('/:id', getProductById);
+
+// Protected routes (require authentication)
 router.post('/', verifyToken, parser.single('image'), createProduct);
 router.put('/:id', verifyToken, parser.single('image'), updateProduct);
 router.delete('/:id', verifyToken, deleteProduct);

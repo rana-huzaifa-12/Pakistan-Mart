@@ -1,4 +1,3 @@
-// frontend/src/components/AdminDashboard.jsx
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import toast from 'react-hot-toast';
@@ -22,6 +21,7 @@ function AdminDashboard() {
 
     const token = localStorage.getItem('adminToken');
 
+    // Fetch products from backend
     const fetchProducts = async () => {
         try {
             const res = await axios.get(`${API_BASE}/products`);
@@ -31,6 +31,7 @@ function AdminDashboard() {
         }
     };
 
+    // Fetch orders from backend
     const fetchOrders = async () => {
         try {
             const res = await axios.get(`${API_BASE}/orders`, {
@@ -47,24 +48,24 @@ function AdminDashboard() {
         fetchOrders();
     }, []);
 
+    // Handle input changes
     const handleInput = (e) => {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
     };
 
+    // Handle file selection
     const handleFileChange = (e) => {
         const file = e.target.files[0];
         setFormData({ ...formData, image: file });
         setFileName(file ? file.name : '');
     };
 
+    // Handle form submit (create or update)
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        if (!token) {
-            toast.error('❌ You are not logged in as admin!');
-            return;
-        }
+        if (!token) return toast.error('❌ You are not logged in as admin!');
 
         const payload = new FormData();
         Object.entries(formData).forEach(([key, value]) => {
@@ -74,6 +75,7 @@ function AdminDashboard() {
 
         try {
             if (editingId) {
+                // Update product
                 await axios.put(`${API_BASE}/products/${editingId}`, payload, {
                     headers: {
                         Authorization: `Bearer ${token}`,
@@ -82,6 +84,7 @@ function AdminDashboard() {
                 });
                 toast.success('✏️ Product updated!');
             } else {
+                // Create product
                 await axios.post(`${API_BASE}/products`, payload, {
                     headers: {
                         Authorization: `Bearer ${token}`,
@@ -91,6 +94,7 @@ function AdminDashboard() {
                 toast.success('➕ Product added!');
             }
 
+            // Reset form
             setFormData({ name: '', price: '', image: null, description: '', category: '' });
             setFileName('');
             setEditingId(null);
@@ -101,19 +105,21 @@ function AdminDashboard() {
         }
     };
 
+    // Pre-fill form for editing
     const handleEdit = (product) => {
         setFormData({
             name: product.name,
             price: product.price,
-            image: product.image || null, // store Cloudinary URL
+            image: null, // set to null so new file can be selected
             description: product.description,
             category: product.category,
         });
-        setFileName(''); // no new file yet
+        setFileName('');
         setEditingId(product._id);
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
+    // Delete product
     const handleDelete = async (id) => {
         if (!token) return toast.error('❌ Not authorized');
         try {
@@ -127,6 +133,7 @@ function AdminDashboard() {
         }
     };
 
+    // Delete order
     const handleOrderDelete = async (id) => {
         if (!token) return toast.error('❌ Not authorized');
         try {
@@ -282,7 +289,7 @@ function AdminDashboard() {
                     </div>
                 </section>
 
-                {/* Orders */}
+                {/* Orders Section */}
                 <section className="mt-10">
                     <h2 className="text-xl font-semibold text-gray-800 mb-4">📦 Customer Orders</h2>
                     {orders.length === 0 ? (
@@ -294,21 +301,11 @@ function AdminDashboard() {
                                     key={order._id}
                                     className="bg-gray-50 p-4 rounded-lg shadow-sm space-y-2"
                                 >
-                                    <p>
-                                        <strong>Name:</strong> {order.name}
-                                    </p>
-                                    <p>
-                                        <strong>Email:</strong> {order.email}
-                                    </p>
-                                    <p>
-                                        <strong>Phone:</strong> {order.phone}
-                                    </p>
-                                    <p>
-                                        <strong>Address:</strong> {order.address}
-                                    </p>
-                                    <p>
-                                        <strong>Payment Method:</strong> {order.paymentMethod}
-                                    </p>
+                                    <p><strong>Name:</strong> {order.name}</p>
+                                    <p><strong>Email:</strong> {order.email}</p>
+                                    <p><strong>Phone:</strong> {order.phone}</p>
+                                    <p><strong>Address:</strong> {order.address}</p>
+                                    <p><strong>Payment Method:</strong> {order.paymentMethod}</p>
                                     <ul className="list-disc ml-5 text-sm text-gray-700">
                                         {order.items.map((item, idx) => (
                                             <li key={idx}>

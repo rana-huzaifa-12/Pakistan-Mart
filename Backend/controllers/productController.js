@@ -37,7 +37,7 @@ exports.getProductById = async (req, res) => {
     }
 };
 
-// POST create new product with optional image uploaded to Cloudinary
+// POST create new product with Cloudinary image upload
 exports.createProduct = async (req, res) => {
     try {
         const { name, description, price, category } = req.body;
@@ -45,8 +45,12 @@ exports.createProduct = async (req, res) => {
         let imagePublicId = '';
 
         if (req.file) {
-            imageUrl = req.file.path; // URL of uploaded image
-            imagePublicId = req.file.filename; // public_id from multer-storage-cloudinary
+            // Upload image to Cloudinary
+            const result = await cloudinary.uploader.upload(req.file.path, {
+                folder: 'products', // optional folder
+            });
+            imageUrl = result.secure_url;
+            imagePublicId = result.public_id;
         }
 
         const newProduct = new Product({
@@ -55,18 +59,19 @@ exports.createProduct = async (req, res) => {
             price,
             category,
             image: imageUrl,
-            imagePublicId // store public_id for deletion
+            imagePublicId
         });
-        await newProduct.save();
 
+        await newProduct.save();
         res.status(201).json(newProduct);
+
     } catch (error) {
-        console.error('Upload error:', error);
-        res.status(500).json({ message: 'Failed to upload product' });
+        console.error('Create Product error:', error);
+        res.status(500).json({ message: 'Failed to create product' });
     }
 };
 
-// PUT update existing product
+// PUT update existing product with optional Cloudinary image
 exports.updateProduct = async (req, res) => {
     try {
         const { name, description, price, category } = req.body;
@@ -87,14 +92,19 @@ exports.updateProduct = async (req, res) => {
                 await cloudinary.uploader.destroy(product.imagePublicId);
             }
 
-            product.image = req.file.path;
-            product.imagePublicId = req.file.filename;
+            // Upload new image
+            const result = await cloudinary.uploader.upload(req.file.path, {
+                folder: 'products',
+            });
+            product.image = result.secure_url;
+            product.imagePublicId = result.public_id;
         }
 
         const updatedProduct = await product.save();
         res.json(updatedProduct);
-    } catch (err) {
-        console.error('Error updating product:', err);
+
+    } catch (error) {
+        console.error('Update Product error:', error);
         res.status(500).json({ message: 'Failed to update product' });
     }
 };
