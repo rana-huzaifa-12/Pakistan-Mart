@@ -11,13 +11,12 @@ exports.getAllProducts = async (req, res) => {
     }
 };
 
-// GET by category
+// GET products by category
 exports.getProductsByCategory = async (req, res) => {
     try {
         const { category } = req.params;
-        const products = category === 'All'
-            ? await Product.find()
-            : await Product.find({ category });
+        const products =
+            category === 'All' ? await Product.find() : await Product.find({ category });
         res.json(products);
     } catch (err) {
         console.error('Error fetching category products:', err);
@@ -25,7 +24,7 @@ exports.getProductsByCategory = async (req, res) => {
     }
 };
 
-// GET single product
+// GET single product by ID
 exports.getProductById = async (req, res) => {
     try {
         const product = await Product.findById(req.params.id);
@@ -37,14 +36,17 @@ exports.getProductById = async (req, res) => {
     }
 };
 
-// POST create product
+// POST create new product with optional image uploaded to Cloudinary
 exports.createProduct = async (req, res) => {
     try {
         const { name, description, price, category } = req.body;
+
+        // req.file.path contains Cloudinary URL if image uploaded, else empty string
         const image = req.file ? req.file.path : '';
 
         const newProduct = new Product({ name, description, price, category, image });
         await newProduct.save();
+
         res.status(201).json(newProduct);
     } catch (error) {
         console.error('Upload error:', error);
@@ -52,19 +54,18 @@ exports.createProduct = async (req, res) => {
     }
 };
 
-// PUT update product
+// PUT update existing product, update image if new one uploaded
 exports.updateProduct = async (req, res) => {
     try {
         const { name, description, price, category } = req.body;
         const updateData = { name, description, price, category };
 
+        // Only update image URL if new image uploaded via Cloudinary
         if (req.file) updateData.image = req.file.path;
 
-        const updatedProduct = await Product.findByIdAndUpdate(
-            req.params.id,
-            updateData,
-            { new: true }
-        );
+        const updatedProduct = await Product.findByIdAndUpdate(req.params.id, updateData, {
+            new: true,
+        });
 
         res.json(updatedProduct);
     } catch (err) {
@@ -73,7 +74,7 @@ exports.updateProduct = async (req, res) => {
     }
 };
 
-// DELETE product
+// DELETE product by ID
 exports.deleteProduct = async (req, res) => {
     try {
         await Product.findByIdAndDelete(req.params.id);
