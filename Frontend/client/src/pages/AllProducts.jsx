@@ -63,7 +63,7 @@ function AllProducts({ searchQuery }) {
                                 {/* Image */}
                                 <div className="relative w-full h-40 sm:h-44 md:h-48 overflow-hidden rounded">
                                     <img
-                                        src={`${API_BASE.replace('/api', '')}/${product.image}`}
+                                        src={product.image}
                                         alt={product.name}
                                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                                     />

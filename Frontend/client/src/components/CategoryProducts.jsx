@@ -50,7 +50,7 @@ function CategoryProducts({ searchQuery }) {
                         >
                             <div className="overflow-hidden">
                                 <img
-                                    src={`${API_BASE.replace('/api', '')}/${product.image}`}
+                                    src={product.image}
                                     alt={product.name}
                                     className="w-full h-48 object-cover transition-transform duration-300 hover:scale-105"
                                 />

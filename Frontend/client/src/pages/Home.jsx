@@ -44,7 +44,7 @@ function Home({ searchQuery = '' }) {
                 >
                     <Link to={`/product/${product._id}`}>
                         <img
-                            src={`${API_BASE.replace('/api', '')}/${product.image}`}
+                            src={product.image}
                             alt={product.name}
                             className="w-full h-40 sm:h-48 object-cover transition-transform duration-300 group-hover:scale-105"
                         />
