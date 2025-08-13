@@ -64,7 +64,7 @@ export default function ProductDetails() {
                 {/* Image */}
                 <div className="flex justify-center items-center bg-gray-50 p-5">
                     <img
-                        src={`${API_BASE.replace('/api', '')}/${product.image}`}
+                        src={product.image}
                         alt={product.name}
                         className="rounded-xl w-full max-w-sm object-cover transition-transform duration-300 hover:scale-105 shadow-md"
                     />
