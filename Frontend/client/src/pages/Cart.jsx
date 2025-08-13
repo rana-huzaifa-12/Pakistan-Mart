@@ -22,7 +22,7 @@ function Cart() {
 
                 {cart.length === 0 ? (
                     <div className="text-center text-zinc-600 text-sm sm:text-xl mt-12 sm:mt-16">
-                        Your cart is currently empty.
+                        Your cart is currently empty...
                     </div>
                 ) : (
                     <>
