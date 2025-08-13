@@ -1,11 +1,10 @@
+// frontend/src/components/AdminDashboard.jsx
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import { FaFolderOpen } from 'react-icons/fa';
 
 const API_BASE = import.meta.env.VITE_API_URL;
-
-
 
 function AdminDashboard() {
     const [products, setProducts] = useState([]);
@@ -19,15 +18,9 @@ function AdminDashboard() {
         category: '',
     });
     const [editingId, setEditingId] = useState(null);
-    const [searchQuery, setSearchQuery] = useState("");
-
+    const [searchQuery, setSearchQuery] = useState('');
 
     const token = localStorage.getItem('adminToken');
-    const authHeader = {
-        headers: {
-            Authorization: `Bearer ${token}`,
-        },
-    };
 
     const fetchProducts = async () => {
         try {
@@ -40,7 +33,9 @@ function AdminDashboard() {
 
     const fetchOrders = async () => {
         try {
-            const res = await axios.get(`${API_BASE}/orders`, authHeader);
+            const res = await axios.get(`${API_BASE}/orders`, {
+                headers: { Authorization: `Bearer ${token}` },
+            });
             setOrders(res.data);
         } catch (err) {
             toast.error('Failed to fetch orders');
@@ -65,31 +60,35 @@ function AdminDashboard() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        if (!token) {
+            toast.error('❌ You are not logged in as admin!');
+            return;
+        }
+
         const payload = new FormData();
         Object.entries(formData).forEach(([key, value]) => {
-            if (key === 'image' && value) payload.append('image', value);
+            if (key === 'image' && value instanceof File) payload.append('image', value);
             else if (key !== 'image') payload.append(key, value);
         });
 
         try {
             if (editingId) {
                 await axios.put(`${API_BASE}/products/${editingId}`, payload, {
-                    ...authHeader,
                     headers: {
-                        ...authHeader.headers,
+                        Authorization: `Bearer ${token}`,
                         'Content-Type': 'multipart/form-data',
                     },
                 });
-                toast.success(' Product updated!');
+                toast.success('✏️ Product updated!');
             } else {
                 await axios.post(`${API_BASE}/products`, payload, {
-                    ...authHeader,
                     headers: {
-                        ...authHeader.headers,
+                        Authorization: `Bearer ${token}`,
                         'Content-Type': 'multipart/form-data',
                     },
                 });
-                toast.success(' Product added!');
+                toast.success('➕ Product added!');
             }
 
             setFormData({ name: '', price: '', image: null, description: '', category: '' });
@@ -97,7 +96,7 @@ function AdminDashboard() {
             setEditingId(null);
             fetchProducts();
         } catch (err) {
-            console.error(err);
+            console.error(err.response?.data || err);
             toast.error('❌ Unauthorized or error submitting product');
         }
     };
@@ -106,41 +105,47 @@ function AdminDashboard() {
         setFormData({
             name: product.name,
             price: product.price,
-            image: null,
+            image: product.image || null, // store Cloudinary URL
             description: product.description,
             category: product.category,
         });
-        setFileName('');
+        setFileName(''); // no new file yet
         setEditingId(product._id);
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
     const handleDelete = async (id) => {
+        if (!token) return toast.error('❌ Not authorized');
         try {
-            await axios.delete(`${API_BASE}/products/${id}`, authHeader);
+            await axios.delete(`${API_BASE}/products/${id}`, {
+                headers: { Authorization: `Bearer ${token}` },
+            });
             toast.success('🗑️ Product deleted!');
             fetchProducts();
         } catch (err) {
-            toast.error(' Unauthorized or error deleting product');
+            toast.error('❌ Unauthorized or error deleting product');
         }
     };
 
-    // DELETE ORDER FUNCTION
     const handleOrderDelete = async (id) => {
+        if (!token) return toast.error('❌ Not authorized');
         try {
-            await axios.delete(`${API_BASE}/orders/${id}`, authHeader);
+            await axios.delete(`${API_BASE}/orders/${id}`, {
+                headers: { Authorization: `Bearer ${token}` },
+            });
             toast.success('🗑️ Order deleted!');
             fetchOrders();
         } catch (err) {
-            toast.error(' Error deleting order');
+            toast.error('❌ Error deleting order');
         }
     };
 
     return (
-
-        <div className='bg-gradient-to-r from-orange-50 via-gray-200 to-gray-100'>
+        <div className="bg-gradient-to-r from-orange-50 via-gray-200 to-gray-100">
             <div className="p-4 sm:p-6 space-y-10 max-w-7xl mx-auto">
-                <h1 className="text-2xl sm:text-4xl font-bold text-gray-800 mt-4 text-center">Admin Dashboard</h1>
+                <h1 className="text-2xl sm:text-4xl font-bold text-gray-800 mt-4 text-center">
+                    Admin Dashboard
+                </h1>
 
                 {/* Form */}
                 <form
@@ -203,8 +208,13 @@ function AdminDashboard() {
                             className="w-full border rounded px-3 py-2 bg-gray-100 cursor-pointer"
                             required={!editingId}
                         />
-                        {fileName && (
-                            <p className="text-sm mt-1 text-green-600">📁 {fileName}</p>
+                        {fileName && <p className="text-sm mt-1 text-green-600">📁 {fileName}</p>}
+                        {editingId && !fileName && formData.image && (
+                            <img
+                                src={formData.image}
+                                alt="Current Product"
+                                className="h-20 mt-2 rounded-md object-cover"
+                            />
                         )}
                     </div>
 
@@ -216,17 +226,13 @@ function AdminDashboard() {
                     </button>
                 </form>
 
-
-
-
                 {/* Product List */}
                 <section>
                     <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center gap-2">
-                        <FaFolderOpen className="text-orange-600" />
-                        Products
+                        <FaFolderOpen className="text-orange-600" /> Products
                     </h2>
 
-                    {/*  Search Bar */}
+                    {/* Search Bar */}
                     <div className="mb-4">
                         <div className="relative w-full sm:w-1/2">
                             <input
@@ -236,29 +242,21 @@ function AdminDashboard() {
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
                             />
-                            <svg
-                                className="absolute left-3 top-2.5 w-5 h-5 text-gray-400 pointer-events-none"
-                                fill="none"
-                                stroke="currentColor"
-                                strokeWidth="2"
-                                viewBox="0 0 24 24"
-                                xmlns="http://www.w3.org/2000/svg"
-                            >
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 1110.5 3a7.5 7.5 0 016.15 13.65z" />
-                            </svg>
                         </div>
                     </div>
 
-
                     <div className="grid gap-5 grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
                         {products
-                            .filter((product) =>
-                                product.name.toLowerCase().includes(searchQuery.toLowerCase())
+                            .filter((p) =>
+                                p.name.toLowerCase().includes(searchQuery.toLowerCase())
                             )
                             .map((product) => (
-                                <div key={product._id} className="bg-white p-4 rounded-xl shadow-sm flex flex-col">
+                                <div
+                                    key={product._id}
+                                    className="bg-white p-4 rounded-xl shadow-sm flex flex-col"
+                                >
                                     <img
-                                        src={`${API_BASE.replace('/api', '')}/${product.image}`}
+                                        src={product.image}
                                         alt={product.name}
                                         className="h-40 w-full object-cover rounded-md"
                                     />
@@ -284,7 +282,6 @@ function AdminDashboard() {
                     </div>
                 </section>
 
-
                 {/* Orders */}
                 <section className="mt-10">
                     <h2 className="text-xl font-semibold text-gray-800 mb-4">📦 Customer Orders</h2>
@@ -293,12 +290,25 @@ function AdminDashboard() {
                     ) : (
                         <div className="space-y-4">
                             {orders.map((order) => (
-                                <div key={order._id} className="bg-gray-50 p-4 rounded-lg shadow-sm space-y-2">
-                                    <p><strong>Name:</strong> {order.name}</p>
-                                    <p><strong>Email:</strong> {order.email}</p>
-                                    <p><strong>Phone:</strong> {order.phone}</p>
-                                    <p><strong>Address:</strong> {order.address}</p>
-                                    <p><strong>Payment Method:</strong> {order.paymentMethod}</p>
+                                <div
+                                    key={order._id}
+                                    className="bg-gray-50 p-4 rounded-lg shadow-sm space-y-2"
+                                >
+                                    <p>
+                                        <strong>Name:</strong> {order.name}
+                                    </p>
+                                    <p>
+                                        <strong>Email:</strong> {order.email}
+                                    </p>
+                                    <p>
+                                        <strong>Phone:</strong> {order.phone}
+                                    </p>
+                                    <p>
+                                        <strong>Address:</strong> {order.address}
+                                    </p>
+                                    <p>
+                                        <strong>Payment Method:</strong> {order.paymentMethod}
+                                    </p>
                                     <ul className="list-disc ml-5 text-sm text-gray-700">
                                         {order.items.map((item, idx) => (
                                             <li key={idx}>
