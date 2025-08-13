@@ -1,4 +1,5 @@
 const Product = require('../models/product');
+const { cloudinary } = require('../cloudinaryConfig');
 
 // GET all products
 exports.getAllProducts = async (req, res) => {
@@ -40,9 +41,7 @@ exports.getProductById = async (req, res) => {
 exports.createProduct = async (req, res) => {
     try {
         const { name, description, price, category } = req.body;
-
-        // req.file.path contains Cloudinary URL if image uploaded, else empty string
-        const image = req.file ? req.file.path : '';
+        const image = req.file ? req.file.path : ''; // Cloudinary URL
 
         const newProduct = new Product({ name, description, price, category, image });
         await newProduct.save();
@@ -59,7 +58,6 @@ exports.updateProduct = async (req, res) => {
     try {
         const { name, description, price, category } = req.body;
 
-        // Find the existing product first
         const product = await Product.findById(req.params.id);
         if (!product) return res.status(404).json({ message: 'Product not found' });
 
@@ -69,8 +67,17 @@ exports.updateProduct = async (req, res) => {
         product.price = price || product.price;
         product.category = category || product.category;
 
-        // Only update image if new file uploaded via Cloudinary
-        if (req.file && req.file.path) product.image = req.file.path;
+        // Update image if new file uploaded via Cloudinary
+        if (req.file && req.file.path) {
+            // Delete previous image from Cloudinary if exists
+            if (product.image) {
+                const segments = product.image.split('/');
+                const filename = segments[segments.length - 1];
+                const public_id = filename.split('.')[0];
+                await cloudinary.uploader.destroy(`products/${public_id}`);
+            }
+            product.image = req.file.path;
+        }
 
         const updatedProduct = await product.save();
         res.json(updatedProduct);
@@ -80,9 +87,20 @@ exports.updateProduct = async (req, res) => {
     }
 };
 
-// DELETE product by ID
+// DELETE product by ID (also delete image from Cloudinary)
 exports.deleteProduct = async (req, res) => {
     try {
+        const product = await Product.findById(req.params.id);
+        if (!product) return res.status(404).json({ message: 'Product not found' });
+
+        // Delete image from Cloudinary if exists
+        if (product.image) {
+            const segments = product.image.split('/');
+            const filename = segments[segments.length - 1];
+            const public_id = filename.split('.')[0];
+            await cloudinary.uploader.destroy(`products/${public_id}`);
+        }
+
         await Product.findByIdAndDelete(req.params.id);
         res.json({ message: 'Product deleted' });
     } catch (err) {
