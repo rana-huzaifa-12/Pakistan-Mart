@@ -28,6 +28,8 @@ function Checkout() {
         paymentMethod: '',
     });
 
+    const [confirmed, setConfirmed] = useState(false); // <-- new state
+
     const [loading, setLoading] = useState(false);
 
     const baseTotal = cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
@@ -43,6 +45,11 @@ function Checkout() {
 
         if (!name || !email || !phone || !address || !paymentMethod) {
             toast.error('Please fill all fields');
+            return;
+        }
+
+        if (!confirmed) {
+            toast.error('Please confirm that you agree before placing the order');
             return;
         }
 
@@ -202,11 +209,29 @@ function Checkout() {
                         <p className="text-lg font-semibold">Total: Rs. {total}</p>
                     </div>
 
+                    {/* Confirmation / Warning message */}
+                    <div className="mb-4 p-4 border border-red-600 bg-red-100 rounded text-red-800 font-bold text-center text-sm sm:text-base">
+                        IMPORTANT: For all payment methods except Cash on Delivery, full payment must be completed before placing your order.
+                        For Cash on Delivery, delivery charges must be paid in advance.
+                        Attempting to place fake orders or avoid payments will result in strict action by the organization.
+                    </div>
+
+                    {/* Confirmation Checkbox */}
+                    <label className="flex items-center gap-2 mb-4 cursor-pointer text-[#a73e2c] font-semibold select-none">
+                        <input
+                            type="checkbox"
+                            checked={confirmed}
+                            onChange={() => setConfirmed(prev => !prev)}
+                            className="w-5 h-5 rounded border-[#a73e2c] focus:ring-[#a73e2c]"
+                        />
+                        I confirm that I have read and agree to the terms above.
+                    </label>
+
                     {/* Submit Button */}
                     <button
                         onClick={handlePlaceOrder}
-                        disabled={loading}
-                        className={`w-full flex items-center justify-center gap-2 ${loading ? 'bg-gray-400 cursor-not-allowed' : 'bg-[#a73e2c] hover:bg-[#922f1d]'
+                        disabled={loading || !confirmed}
+                        className={`w-full flex items-center justify-center gap-2 ${loading || !confirmed ? 'bg-gray-400 cursor-not-allowed' : 'bg-[#a73e2c] hover:bg-[#922f1d]'
                             } text-white py-3 rounded-md font-semibold text-lg transition-all duration-300`}
                     >
                         <FaCashRegister className="text-white" />
